@@ -6,3 +6,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(LOGGER)
 
 add_subdirectory(loglib)
+add_subdirectory(app)

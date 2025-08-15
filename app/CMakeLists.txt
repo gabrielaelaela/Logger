@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
-project(LoggerLib)
 
-option(BUILD_SHARED_LIBS "Build as a shared library" ON)
+project(LoggerApp LANGUAGES CXX)
 
-add_library(loglib STATIC src/FileLogger.cpp)
-target_include_directories(loglib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_executable(${PROJECT_NAME} src/main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE LoggerLib)

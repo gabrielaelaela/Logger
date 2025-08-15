@@ -5,7 +5,7 @@ namespace loggers
 
 FileLogger::FileLogger(const std::string& filename, Priority defaultPriority) : ALogger(defaultPriority), m_Filename(filename) 
 {
-    logs.open(m_Filename);
+    logs.open(m_Filename, std::ios::app);
     if(!logs) std::cout << "Cannot open file.\n";
 }
 
