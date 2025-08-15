@@ -1,0 +1,5 @@
+/home/gabriela/study/cxx/TestTask/.build/CMakeFiles/edit_cache.dir
+/home/gabriela/study/cxx/TestTask/.build/CMakeFiles/rebuild_cache.dir
+/home/gabriela/study/cxx/TestTask/.build/loglib/CMakeFiles/loglib.dir
+/home/gabriela/study/cxx/TestTask/.build/loglib/CMakeFiles/edit_cache.dir
+/home/gabriela/study/cxx/TestTask/.build/loglib/CMakeFiles/rebuild_cache.dir
