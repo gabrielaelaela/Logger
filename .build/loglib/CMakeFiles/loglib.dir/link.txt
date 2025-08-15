@@ -1,2 +1,0 @@
-/usr/bin/ar qc libloglib.a CMakeFiles/loglib.dir/src/FileLogger.cpp.o
-/usr/bin/ranlib libloglib.a
