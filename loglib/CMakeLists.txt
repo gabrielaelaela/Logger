@@ -3,5 +3,10 @@ project(LoggerLib LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
-add_library(${PROJECT_NAME} STATIC src/FileLogger.cpp src/AbstractLogger.cpp)
+add_library(${PROJECT_NAME} STATIC 
+src/FileLogger.cpp 
+src/AbstractLogger.cpp
+src/SocketLogger.cpp
+)
+
 target_include_directories(${PROJECT_NAME} PUBLIC include)

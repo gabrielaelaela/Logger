@@ -28,6 +28,10 @@ public:
     //! Установка уровня важности по умолчанию 
     //! @param defaultPriority Уровень важности по умолчанию 
     virtual void setDefaultPriority(Priority defaultPriority) = 0;
+
+    //! Проверка создания логгера
+    //! @return true в случае успешного создания, иначе false
+    virtual bool isValid() const = 0;
 };  
 
 } 

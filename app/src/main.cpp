@@ -1,4 +1,5 @@
 #include "FileLogger.h"
+#include "SocketLogger.h"
 #include <iostream>
 #include <string>
 #include <thread>
@@ -6,6 +7,8 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <cctype>
+#include <limits>
 
 struct LogMessage 
 {
@@ -18,34 +21,97 @@ std::mutex queueMutex;
 std::condition_variable cv;
 std::atomic<bool> finished = false;
 
-void loggerThread(loggers::FileLogger& fileLog) {
-    while (!finished || !logQueue.empty()) {
+void loggerThread(loggers::ILogger& logger) {
+    while (true) {
         std::unique_lock<std::mutex> lock(queueMutex);
-        cv.wait(lock, [] { return finished || !logQueue.empty(); });
 
-        while (!logQueue.empty()) {
-            LogMessage entry = logQueue.front();
-            logQueue.pop();
-            lock.unlock();
-            fileLog.log(entry.message, entry.priority);
-            lock.lock();
-        }
+        cv.wait(lock, [] {
+            return finished || !logQueue.empty();
+        });
+
+        if (finished && logQueue.empty())
+            break;
+
+        LogMessage entry = logQueue.front();
+        logQueue.pop();
+
+        lock.unlock();
+
+        logger.log(entry.message, entry.priority);
     }
 }
 
 int main(int argc, char* argv[])
 {
-    if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <log_file> [default_level]\nExample: " << argv[0] << " log.txt Info\n";
+    std::cout << "Choose default priority (Enter I for Info, W for Warning or E for Error): ";
+    char defPriority;
+    std::cin >> defPriority;
+    defPriority = std::toupper(static_cast<unsigned char>(defPriority));
+    loggers::ILogger::Priority priority;
+    switch (defPriority)
+    {
+    case 'I':
+        priority = loggers::ILogger::Priority::Info;
+        break;
+    
+    case 'W':
+    priority = loggers::ILogger::Priority::Warning;
+        break;
+
+    case 'E':
+        priority = loggers::ILogger::Priority::Error;
+        break;
+
+    default:
+        std::cout << "Invalid priority.\n";
         return 1;
     }
 
-    std::string filename = argv[1];
-    loggers::ILogger::Priority priority = loggers::ALogger::stringToPriority(argv[2]);
+    std::unique_ptr<loggers::ILogger> logger;
 
-    loggers::FileLogger fileLog(filename, priority);
+    std::cout << "\nChoose logger type (enter F for File or S for Socket): ";
+    char loggerType;
+    std::cin >> loggerType;
+    loggerType = std::toupper(static_cast<unsigned char>(loggerType));
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    std::thread logThread(loggerThread, std::ref(fileLog));
+    switch (loggerType)
+    {
+    case 'F':
+    {
+        std::cout << "Enter filename: ";
+        std::string filename;
+        std::getline(std::cin, filename);
+
+        logger = std::make_unique<loggers::FileLogger>(filename, priority);
+        break;
+    }
+    
+    case 'S':
+    {
+        std::cout << "Enter ip address: ";
+        std::string ip;
+        std::getline(std::cin, ip);
+
+        std::cout << "\nEnter port: ";
+        int port = 0;
+        std::cin >> port;
+
+        logger = std::make_unique<loggers::SocketLogger>(ip, port, priority);
+        break;
+    }
+
+    default:
+        std::cout << "Invalid logger type.\n";
+        return 1;
+    }
+
+    if (!logger->isValid()) {
+        std::cerr << "Logger initialization failed.\n";
+        return 1;
+    }
+
+    std::thread logThread(loggerThread, std::ref(*logger));
 
     while (true)
     {

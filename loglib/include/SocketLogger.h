@@ -1,7 +1,10 @@
 #pragma once
 #include "AbstractLogger.h"
-#include <fstream>
-#include <filesystem>
+#include <cstring>
+#include <sstream>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #include <ctime>
 #include <iomanip>
 #include <chrono>
@@ -9,19 +12,20 @@
 namespace loggers
 {
 
-//! Логгер, записывающий сообщения в файл
-class FileLogger : public ALogger
+//! Логгер, записывающий сообщения в сокет 
+class SocketLogger : public ALogger
 {
 public:
-    FileLogger() = delete;
+    SocketLogger() = delete;
 
-    //! Создание файлового логгера 
-    //! @param filename Путь к файлу с логами
+    //! Создание сокет логгера 
+    //! @param ip Адрес сокета
+    //! @param port Порт сокета 
     //! @param defaultPriority Уровень важности по умолчанию 
-    FileLogger(const std::string& filename, Priority defaultPriority);
+    SocketLogger(const std::string& ip, int port, Priority defaultPriority);
 
-    //! Закрытие потока для записи в журнал
-    ~FileLogger() override;
+    //! Закрытие сокета
+    ~SocketLogger() override;
     
     //! Запись сообщений в лог 
     //! @param text Текст сообщения
@@ -34,11 +38,8 @@ public:
     bool isValid() const override;
 
 private:
-    //! Путь к файлу журнала
-    std::filesystem::path m_Filename;
-
-    //! Поток для записи в журнал
-    std::ofstream logs;
+    //! Сокет
+    int m_sock = -1;
 };
 
 }

@@ -10,7 +10,8 @@ void ALogger::setDefaultPriority(Priority defaultPriority)
     m_DefaultPriority = defaultPriority;
 }
 
-std::string ALogger::toString(ILogger::Priority priority) {
+std::string ALogger::toString(ILogger::Priority priority) 
+{
     switch (priority)
     {
     case ILogger::Priority::Info: return "[INFO]\t";
@@ -21,7 +22,8 @@ std::string ALogger::toString(ILogger::Priority priority) {
     }
 }
 
-ILogger::Priority ALogger::stringToPriority(const std::string& input) {
+ILogger::Priority ALogger::stringToPriority(const std::string& input) 
+{
     std::string lowerInput = input; // создаём копию
     std::transform(lowerInput.begin(), lowerInput.end(), lowerInput.begin(),
                    [](unsigned char c){ return std::tolower(c); });
