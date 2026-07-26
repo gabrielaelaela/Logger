@@ -35,7 +35,7 @@ void loggerThread(loggers::FileLogger& fileLog) {
 
 int main(int argc, char* argv[])
 {
-    if (argc < 2) {
+    if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " <log_file> [default_level]\nExample: " << argv[0] << " log.txt Info\n";
         return 1;
     }
