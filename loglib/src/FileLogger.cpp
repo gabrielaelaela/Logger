@@ -22,7 +22,7 @@ bool FileLogger::log(const std::string& text, Priority priority) {
     logs << std::put_time(local_tm, "%F %T") << "\t" << toString(priority) << "\t" << text << "\n";
     logs.flush();
 
-    return true;
+    return static_cast<bool>(logs);
 }
 
 FileLogger::~FileLogger() {

@@ -20,7 +20,7 @@ public:
     FileLogger(const std::string& filename, Priority defaultPriority);
 
     //! Закрытие файла журнала
-    ~FileLogger();
+    ~FileLogger() override;
     
     //! Запись сообщений в лог 
     //! @param text Текст сообщения

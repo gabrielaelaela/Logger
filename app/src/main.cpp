@@ -16,7 +16,7 @@ struct LogMessage
 std::queue<LogMessage> logQueue;
 std::mutex queueMutex;
 std::condition_variable cv;
-bool finished = false;
+std::atomic<bool> finished = false;
 
 void loggerThread(loggers::FileLogger& fileLog) {
     while (!finished || !logQueue.empty()) {
